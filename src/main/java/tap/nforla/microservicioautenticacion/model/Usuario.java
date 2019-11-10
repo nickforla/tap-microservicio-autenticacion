@@ -1,4 +1,4 @@
-package tap.nforla.microservicioautenticacion.modelo;
+package tap.nforla.microservicioautenticacion.model;
 
 import lombok.Getter;
 import lombok.Setter;

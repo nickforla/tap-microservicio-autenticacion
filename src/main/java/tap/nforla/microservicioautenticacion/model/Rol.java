@@ -1,4 +1,4 @@
-package tap.nforla.microservicioautenticacion.modelo;
+package tap.nforla.microservicioautenticacion.model;
 
 public enum Rol {
     USER("USER"), ADMIN("ADMIN");
