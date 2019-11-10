@@ -6,9 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tap.nforla.microservicioautenticacion.exceptions.JwtNoPresenteException;
 import tap.nforla.microservicioautenticacion.services.IUsuarioService;
 
@@ -49,6 +47,29 @@ public class RequestsController {
 
             logger.warn(exc.getMessage());
             return ResponseEntity.ok(String.format("{\"mensaje\": \"%s\"}", exc.getMessage()));
+
+        }catch (JwtNoPresenteException | IOException exc){
+
+            logger.error("Excepción en la ejecución: " + exc.getMessage());
+            return ResponseEntity.badRequest().body("{\"mensaje\": \"La solicitud no es válida\"}");
+
+        }
+    }
+
+    @PutMapping(path = "/cuotaMaximaPorHora/{nuevaCuotaMaxima}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity putNuevaCuotaMaxima(@PathVariable int nuevaCuotaMaxima, HttpServletRequest request){
+
+        try{
+
+            String username = usuarioService.getUsernameFromJwt(request.getHeader("Authorization"));
+
+            usuarioService.setNuevaCuotaMaximaRequestsPorHora(username, nuevaCuotaMaxima);
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("username", username);
+            responseBody.put("mensaje", "Cuota máxima del usuario actualizada: " + nuevaCuotaMaxima);
+
+            return ResponseEntity.ok(objectMapper.writeValueAsString(responseBody));
 
         }catch (JwtNoPresenteException | IOException exc){
 

@@ -9,5 +9,5 @@ public interface IUsuarioService {
 
     String getUsernameFromJwt(String jwtToken) throws JwtNoPresenteException, IOException;
     int getCuotaMaximaRequestsPorHora(String username) throws UsernameNotFoundException;
-
+    void setNuevaCuotaMaximaRequestsPorHora(String username, int nuevaCuotaMaxima) throws UsernameNotFoundException;
 }

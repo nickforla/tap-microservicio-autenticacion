@@ -46,7 +46,7 @@ public class UsuarioService implements UserDetailsService, IUsuarioService {
 
         Optional<Usuario> usuarioOptional = usuarioRepository.findByUsername(username);
 
-        return usuarioOptional.orElseThrow(()-> new UsernameNotFoundException("El nombre de usuario indicado no corresponde con ningún usuario")).getMaxRequestsPorHora();
+        return usuarioOptional.orElseThrow(()-> new UsernameNotFoundException("El username no corresponde con ningún usuario")).getMaxRequestsPorHora();
 
     }
 
@@ -61,7 +61,6 @@ public class UsuarioService implements UserDetailsService, IUsuarioService {
         Map<String, Object> jwtPayload = getJwtPayload(jwtToken.replace("Bearer ", ""));
 
         return (String)jwtPayload.get("sub");
-
     }
 
     @SuppressWarnings("unchecked")
@@ -70,6 +69,19 @@ public class UsuarioService implements UserDetailsService, IUsuarioService {
         String payload = jwtToken.split("\\.")[1];
 
         return new ObjectMapper().readValue(Base64Utils.decodeFromString(payload), Map.class);
+
+    }
+
+    @Override
+    public void setNuevaCuotaMaximaRequestsPorHora(String username, int nuevaCuotaMaxima) throws UsernameNotFoundException {
+
+        Optional<Usuario> usuarioOptional = usuarioRepository.findByUsername(username);
+
+        Usuario usuario = usuarioOptional.orElseThrow(()-> new UsernameNotFoundException("El username no corresponde con ningún usuario"));
+
+        usuario.setMaxRequestsPorHora(nuevaCuotaMaxima);
+
+        usuarioRepository.save(usuario);
 
     }
 }
